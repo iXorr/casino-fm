@@ -6,6 +6,7 @@ import type { User } from "../entities/User";
 import { DEFAULT_HEAT, STAGES, UPGRADES } from "../config/game";
 import { EVENTS, EVENT_INTERVAL, type EventKind } from "../config/events";
 import { AD_COOLDOWN, AD_REWARD_BASE, ROOM_ITEMS, VIP_COST } from "../config/monetization";
+import { MEMES, type Meme } from "../config/memes";
 
 function createDefaultUser(): User {
   return {
@@ -97,6 +98,9 @@ export const useGameStore = defineStore(
 
     const adCooldown = ref(0);
 
+    const tv = ref<Meme | null>(null);
+    let broadcastTimeout: ReturnType<typeof setTimeout> | null = null;
+
     const notices = ref<Notice[]>([]);
     const nextEventAt = ref(Date.now() + randomInt(EVENT_INTERVAL.min, EVENT_INTERVAL.max));
 
@@ -115,6 +119,20 @@ export const useGameStore = defineStore(
       const id = ++noticeSeq;
       notices.value.push({ id, label, message, variant });
       setTimeout(() => dismissNotice(id), duration);
+    };
+
+    const broadcast = (memeId: string, duration = 4000) => {
+      const meme = MEMES[memeId];
+      if (!meme) return;
+
+      tv.value = meme;
+      if (broadcastTimeout !== null) {
+        clearTimeout(broadcastTimeout);
+      }
+      broadcastTimeout = setTimeout(() => {
+        tv.value = null;
+        broadcastTimeout = null;
+      }, duration);
     };
 
     let loopId: ReturnType<typeof setInterval> | null = null;
@@ -175,8 +193,13 @@ export const useGameStore = defineStore(
 
       gain *= boostMultiplier.value;
 
+      const prevHeat = user.value.current_heat;
       user.value.balance += gain;
-      user.value.current_heat = Math.min(user.value.current_heat + heat.step_increase, heat.max);
+      const nextHeat = Math.min(user.value.current_heat + heat.step_increase, heat.max);
+      user.value.current_heat = nextHeat;
+      if (prevHeat < heat.max && nextHeat >= heat.max) {
+        broadcast("max_heat");
+      }
       lastSpinAt.value = Date.now();
 
       return gain;
@@ -184,6 +207,19 @@ export const useGameStore = defineStore(
 
     const spin = () => {
       applyGain(effectiveHeat.value.click_value);
+    };
+
+    const boostHeat = () => {
+      if (spinBlocked.value) return;
+
+      const heat = effectiveHeat.value;
+      const prevHeat = user.value.current_heat;
+      const nextHeat = Math.min(prevHeat + heat.step_increase * 2, heat.max);
+      user.value.current_heat = nextHeat;
+      if (prevHeat < heat.max && nextHeat >= heat.max) {
+        broadcast("max_heat");
+      }
+      lastSpinAt.value = Date.now();
     };
 
     const buyUpgrade = (id: number) => {
@@ -233,7 +269,7 @@ export const useGameStore = defineStore(
 
       user.value.balance -= item.cost;
       user.value.owned_room.push(id);
-      showNotice("КОМНАТА", `Куплено «${item.title}»`, "room", 4000);
+      showNotice("УКРАШЕНИЕ", `Куплено «${item.title}»`, "room", 4000);
     };
 
     const fireEvent = () => {
@@ -357,6 +393,7 @@ export const useGameStore = defineStore(
       blockedUntil.value = 0;
       adCooldown.value = 0;
       notices.value = [];
+      tv.value = null;
       nextEventAt.value = Date.now() + randomInt(EVENT_INTERVAL.min, EVENT_INTERVAL.max);
       localStorage.removeItem("game");
     };
@@ -368,6 +405,8 @@ export const useGameStore = defineStore(
       spinBlocked,
       notices,
       dismissNotice,
+      tv,
+      broadcast,
       ownedUpgrades,
       effectiveHeat,
       jackpot,
@@ -382,6 +421,7 @@ export const useGameStore = defineStore(
       watchAd,
       buyVip,
       buyRoomItem,
+      boostHeat,
       fireEvent,
       tick,
       startLoop,

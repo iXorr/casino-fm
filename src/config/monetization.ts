@@ -10,10 +10,9 @@ export type RoomItem = {
 };
 
 export const ROOM_ITEMS: RoomItem[] = [
-  { id: 1, title: "Неоновая вывеска", emoji: "💡", cost: 100 },
-  { id: 2, title: "Бар", emoji: "🍸", cost: 250 },
-  { id: 3, title: "Диван", emoji: "🛋️", cost: 500 },
-  { id: 4, title: "Пальма", emoji: "🌴", cost: 800 },
-  { id: 5, title: "Портрет Мелстроя", emoji: "🖼️", cost: 1500 },
-  { id: 6, title: "Золотая статуя", emoji: "🗿", cost: 3000 },
+  { id: 1, title: "Золотой слиток", emoji: "🪙", cost: 10000 },
+  { id: 2, title: "Бриллиант", emoji: "💎", cost: 50000 },
+  { id: 3, title: "Бриллиантовое кольцо", emoji: "💍", cost: 250000 },
+  { id: 4, title: "Золотая корона", emoji: "👑", cost: 1000000 },
+  { id: 5, title: "Мистический хрусталь", emoji: "🔮", cost: 5000000 },
 ];
