@@ -8,30 +8,32 @@ export type Meme = {
   duration?: number;
 };
 
+const V = `${import.meta.env.BASE_URL}videos/`;
+
 export const MEMES: Record<string, Meme> = {
   max_heat: {
     id: "max_heat",
     text: "Я УЖЕ КРАСНЫЙ, КУЛЬТУРНО НЕ ПОЛУЧИТСЯ",
-    media: "/videos/red_new.mp4",
+    media: `${V}red.mp4`,
     kind: "video",
     duration: 6000,
   },
   debuff: {
     id: "debuff",
     text: "",
-    media: "/videos/go.mp4",
+    media: `${V}go.mp4`,
     kind: "video",
   },
   strong_effect: {
     id: "strong_effect",
     text: "СКОЛЬКО НАХУЙ?",
-    media: "/videos/how_much.mp4",
+    media: `${V}how_much.mp4`,
     kind: "video",
   },
   mem: {
     id: "mem",
     text: "",
-    media: "/videos/for_mem.mp4",
+    media: `${V}for_mem.mp4`,
     kind: "video",
   },
 };

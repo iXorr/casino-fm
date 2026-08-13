@@ -5,6 +5,8 @@ import MemeTv from "../components/MemeTv.vue";
 
 const store = useGameStore();
 
+const baseUrl = import.meta.env.BASE_URL;
+
 const heatPercent = computed(() => {
   const { min, max } = store.effectiveHeat;
   const range = max - min || 1;
@@ -93,7 +95,7 @@ onUnmounted(() => {
                   <div class="wheel-glow" />
                   <img
                     class="wheel"
-                    src="/roulette.png"
+                    :src="`${baseUrl}roulette.png`"
                     alt="Рулетка"
                     @click="onSpin"
                     @dblclick.prevent="onBoost"
