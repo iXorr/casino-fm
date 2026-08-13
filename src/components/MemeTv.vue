@@ -34,10 +34,8 @@ const ownedDecor = computed(() =>
           class="tv-media"
           :src="store.tv.media"
           autoplay
-          loop
-          muted
+          @ended="store.endBroadcast()"
         />
-        <span class="tv-title">{{ store.tv.title }}</span>
       </template>
       <template v-else>
         <span class="tv-offline" />
@@ -94,14 +92,6 @@ const ownedDecor = computed(() =>
   padding: 0 12px;
   text-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
   margin: 0;
-}
-
-.tv-title {
-  position: absolute;
-  bottom: 6px;
-  color: #ffc107;
-  font-size: 0.7rem;
-  letter-spacing: 1px;
 }
 
 .tv-offline {

@@ -43,4 +43,4 @@ export const EVENTS: GameEvent[] = [
   },
 ];
 
-export const EVENT_INTERVAL = { min: 15000, max: 30000 };
+export const EVENT_INTERVAL = { min: 7500, max: 15000 };

@@ -121,18 +121,24 @@ export const useGameStore = defineStore(
       setTimeout(() => dismissNotice(id), duration);
     };
 
+    const endBroadcast = () => {
+      tv.value = null;
+      if (broadcastTimeout !== null) {
+        clearTimeout(broadcastTimeout);
+        broadcastTimeout = null;
+      }
+    };
+
     const broadcast = (memeId: string, duration = 4000) => {
       const meme = MEMES[memeId];
       if (!meme) return;
 
+      endBroadcast();
       tv.value = meme;
-      if (broadcastTimeout !== null) {
-        clearTimeout(broadcastTimeout);
+
+      if (meme.kind !== "video") {
+        broadcastTimeout = setTimeout(endBroadcast, meme.duration ?? duration);
       }
-      broadcastTimeout = setTimeout(() => {
-        tv.value = null;
-        broadcastTimeout = null;
-      }, duration);
     };
 
     let loopId: ReturnType<typeof setInterval> | null = null;
@@ -189,6 +195,7 @@ export const useGameStore = defineStore(
       const jp = jackpot.value;
       if (jp && Math.random() < jp.chance) {
         gain *= jp.multiplier;
+        broadcast("strong_effect");
       }
 
       gain *= boostMultiplier.value;
@@ -286,6 +293,7 @@ export const useGameStore = defineStore(
           event.kind,
           5000,
         );
+        broadcast("strong_effect");
         break;
 
       case "penalty":
@@ -301,6 +309,7 @@ export const useGameStore = defineStore(
           event.kind,
           5000,
         );
+        broadcast("debuff");
         break;
 
       case "crisis":
@@ -315,6 +324,7 @@ export const useGameStore = defineStore(
           event.kind,
           4000,
         );
+        broadcast("debuff");
         break;
 
       case "twist": {
@@ -326,6 +336,7 @@ export const useGameStore = defineStore(
           event.kind,
           4000,
         );
+        broadcast("mem");
         break;
       }
       }
@@ -393,7 +404,7 @@ export const useGameStore = defineStore(
       blockedUntil.value = 0;
       adCooldown.value = 0;
       notices.value = [];
-      tv.value = null;
+      endBroadcast();
       nextEventAt.value = Date.now() + randomInt(EVENT_INTERVAL.min, EVENT_INTERVAL.max);
       localStorage.removeItem("game");
     };
@@ -407,6 +418,7 @@ export const useGameStore = defineStore(
       dismissNotice,
       tv,
       broadcast,
+      endBroadcast,
       ownedUpgrades,
       effectiveHeat,
       jackpot,

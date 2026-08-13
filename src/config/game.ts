@@ -5,9 +5,9 @@ export const DEFAULT_HEAT: Heat = {
   click_value: 1,
   min: 1,
   max: 10,
-  step_increase: 0.25,
-  step_decrease: 0.5,
-  decrease_timeout: 1500,
+  step_increase: 0.08,
+  step_decrease: 1,
+  decrease_timeout: 900,
 };
 
 export type Stage = {

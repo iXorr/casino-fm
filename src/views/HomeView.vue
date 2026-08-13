@@ -77,23 +77,28 @@ onUnmounted(() => {
       <div class="d-flex flex-wrap justify-content-center align-items-center gap-4">
         <MemeTv />
         <div class="d-flex justify-content-center align-items-center gap-4">
-          <div class="wheel-wrap position-relative">
-            <div
-              class="wheel-spin"
-              :style="{ transform: `rotate(${rotation}deg)` }"
-            >
+          <div class="d-flex flex-column align-items-center">
+            <div class="mb-2 fw-bold fs-4">
+              🎰 {{ fmt(store.user.balance) }}
+            </div>
+            <div class="wheel-wrap position-relative">
               <div
-                class="wheel-pulse"
-                :class="{ pulsing }"
+                class="wheel-spin"
+                :style="{ transform: `rotate(${rotation}deg)` }"
               >
-                <div class="wheel-glow" />
-                <img
-                  class="wheel"
-                  src="/roulette.png"
-                  alt="Рулетка"
-                  @click="onSpin"
-                  @dblclick.prevent="onBoost"
+                <div
+                  class="wheel-pulse"
+                  :class="{ pulsing }"
                 >
+                  <div class="wheel-glow" />
+                  <img
+                    class="wheel"
+                    src="/roulette.png"
+                    alt="Рулетка"
+                    @click="onSpin"
+                    @dblclick.prevent="onBoost"
+                  >
+                </div>
               </div>
             </div>
           </div>
@@ -155,6 +160,7 @@ onUnmounted(() => {
   background: #f1f1f1;
   border: 2px solid #ced4da;
   overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .thermo-fill {
@@ -173,6 +179,7 @@ onUnmounted(() => {
   background: #dc3545;
   border: 2px solid #ced4da;
   margin-top: -3px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .thermo-value {
